@@ -87,3 +87,125 @@ function advancedGreeting(name: string, lastName?: string) {
 }
 console.log(advancedGreeting('Jao'));
 console.log(advancedGreeting('Jao', 'Nosdaj'));
+
+//! Union Types
+
+function showNumbersOrString(a: number | string, b: number | string) {
+  console.log('A: ' + a);
+  console.log('B: ' + b);
+}
+
+const arr2: (number | string)[] = [1, 2, 'Jao', 'Nosdaj', 'Pedroka'];
+const arr3: Array<number | string | boolean> = [
+  1,
+  2,
+  'Jao',
+  'Nosdaj',
+  'Pedroka',
+  false,
+];
+console.log(arr3);
+
+//!Avancando em union types
+//conditionals/type of
+function showUserRole(role: string | boolean) {
+  if (typeof role === 'boolean') {
+    return 'Usuario nao aprovado!';
+  }
+  return `Usuario aprovado com role ${role}`;
+}
+showUserRole('Admin');
+console.log(`LOG ~ showUserRole('Admin');:`, showUserRole('Admin'));
+console.log(showUserRole(false));
+
+//! Type alias
+//* criando um novo tipo de dado ao inves de usar um union type gigante
+//* type TIPO = tipo1 | tipo2 | tipo3;
+type ID = string | number;
+function showId(id: ID) {
+  console.log(`O ID eh ${id}`);
+}
+showId(100);
+showId(`200`);
+
+//? Interfaces , importante para react, pode ser extendida
+/*
+ * outra maneira de nomear um tipo de objeto
+ * determinar um nome para o tipo
+ * Escolher quais as propriedades e seus tipos
+ */
+
+interface Point {
+  x: number;
+  y: number;
+  z: number;
+}
+
+function showCoordinates(obj: Point) {
+  console.log(`x:${obj.x} y: ${obj.y} z: ${obj.z}`);
+}
+
+const coordObj: Point = {
+  x: 10,
+  y: -15,
+  z: 30,
+};
+showCoordinates(coordObj);
+
+//! Type alias x interfaces
+/*
+ * Interfaces podem ser alteradas ao longo do codigo
+ * o type acaba sendo uma const, ja a interface acaba sendo um let/var
+ */
+
+interface Person {
+  name: string;
+}
+interface Person {
+  age?: number;
+}
+
+//const alguem:Person = {name:'Julio', age:42}
+const alguem: Person = { name: 'Julio' };
+console.log(`LOG ~ alguem:`, alguem);
+
+//! Literal Types crio o meu tipo
+/*
+ *const direction: 'left' | 'right' | 'top' | 'bottom' = 'left';
+ *const luckyNumber: 13
+ */
+function showDirection(direction: 'left' | 'right' | 'top' | 13) {
+  console.log(`A direcao escolhida foi ${direction}`);
+}
+
+showDirection('left');
+showDirection('top');
+showDirection('right');
+showDirection(13);
+
+console.clear();
+//!Non-null Assertion Operator !
+//! utilizamos ! para avisar que o elemento vai estar disponivel
+//! util na manipulacao do DOM
+const p = document.querySelector('#some-p')!;
+console.log(p.textContent);
+console.log(p);
+
+//! Bigint (nao padronizado para os navegadores ainda)
+/* numeros grandes que podem ser armazenados em um numero inteiro  */
+/* Alterar  config para ES2020*/
+let n: bigint;
+n = 1000n;
+console.log(n);
+console.log(typeof n);
+
+console.clear();
+//! Symbol
+// Cria uma referencia unica para um valor
+// mesmo que tenha o valor de outra variavel os valores
+// serao considerados diferentes
+let symbolA: symbol = Symbol('a');
+let symbolB: symbol = Symbol('a');
+
+console.log(symbolA === symbolB); //mesmo valor, mas referencias diferentes
+console.log(symbolA == symbolB);
