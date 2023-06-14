@@ -121,4 +121,14 @@ console.log(initialCoords);
 initialCoords.setX = 120;
 initialCoords.setY = 321;
 console.log(initialCoords.coordValues);
-//! 10 - Herdando interfaces
+class BlogPost {
+    constructor(title) {
+        this.title = title;
+    }
+    itemTitle() {
+        return `O titulo do blog e ${this.title}`;
+    }
+}
+const myBlog = new BlogPost('My First Blog');
+console.log(myBlog.itemTitle());
+//! 11 - Override de metodos

@@ -157,3 +157,23 @@ initialCoords.setY = 321;
 console.log(initialCoords.coordValues);
 
 //! 10 - Herdando interfaces
+//? Instrucao implements (parecido com o extends), usada para metodos que
+//? varias classes terao em comum
+interface showTitle {
+  itemTitle(): string;
+}
+
+class BlogPost implements showTitle {
+  title;
+  constructor(title: string) {
+    this.title = title;
+  }
+  itemTitle(): string {
+    return `O titulo do blog e ${this.title}`;
+  }
+}
+
+const myBlog = new BlogPost('My First Blog');
+console.log(myBlog.itemTitle());
+
+//! 11 - Override de metodos
