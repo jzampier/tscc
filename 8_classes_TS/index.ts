@@ -177,3 +177,197 @@ const myBlog = new BlogPost('My First Blog');
 console.log(myBlog.itemTitle());
 
 //! 11 - Override de metodos
+/*
+ * Quando uma classe herda outra, ela pode sobrescrever o metodo da classe pai
+ * Basta usar o mesmo nome do metodo e escreve-lo de forma diferente
+ */
+class Base {
+  someMethod() {
+    console.log('testando alguma coisa');
+  }
+}
+
+class Nova extends Base {
+  //?Override do metod someMethod (basta reescreve-lo)
+  someMethod() {
+    console.log('testando alguma coisa nova');
+  }
+}
+
+const myObject = new Nova();
+myObject.someMethod();
+
+//! 12 - visibilidade de props
+/*
+ * public - acessivel em qualquer lugar da classe
+ * protected - acessivel apenas na classe e as classes herdeiras (precisa de
+ * ethodo para acessar a propriedade)
+ * private - acessivel apenas na classe que declarou o method
+ */
+
+//! 12 Public
+/*
+ * Jah esta implicito e nao precisamos declarar
+ * Qualquer method da classe pai podera ser utilizado pela filha
+ */
+class C {
+  public x = 10;
+}
+class D extends C {}
+const cInstance = new C();
+console.log(cInstance.x);
+
+const dInstance = new D();
+console.log(dInstance.x);
+
+//! 13- protected (acessado apenas por metodo e apenas em subclasses)
+class E {
+  protected x = 10;
+  protected protectedMethod() {
+    console.log('Este eh um metodo protegido');
+  }
+}
+
+class F extends E {
+  //*usando metodo para acessar o protected x
+  showX() {
+    console.log('x:' + this.x);
+  }
+  //*usando metodo para acessar o metodo protegido
+  showProtectedMethod() {
+    this.protectedMethod();
+  }
+}
+const fInstance = new F();
+
+fInstance.showX();
+fInstance.showProtectedMethod();
+
+//! 14 - Private (nivel mais alto de protecao)
+//* acessado somente na classe que o definiu (heranca nao consegue acessar)
+//* além disso precisa de metodo
+class PrivateClass {
+  private name = 'Private';
+
+  //*metodo para acessar a private name
+  showName() {
+    return this.name;
+  }
+  private privateMethod() {
+    console.log('Este eh um metod privado');
+  }
+
+  //*metodo para acessar o metodo privado
+  showPrivateMethod() {
+    this.privateMethod();
+  }
+}
+const pObj = new PrivateClass();
+console.warn(pObj.showName());
+pObj.showPrivateMethod();
+
+//! 15 - static members
+/*
+ * Acesso ou utlizacao nao dependem de objetos
+ */
+class StaticMembers {
+  static prop = 'Teste static';
+  static staticMethod() {
+    console.log('Este eh um metodo static');
+  }
+}
+//?chamando a prop sem precisar instanciar um objeto da classe StaticMembers
+console.log(StaticMembers.prop);
+//?chamando o metodo static sem precisar instanciar um objeto da classe
+StaticMembers.staticMethod();
+
+//! 16 Generic class
+/*
+ * as propriedades dos argumentos podem ter os tipos definidos na hora da criacao
+ * da instancia
+ * maior flexibilidade em uma classe
+ */
+class GenericClass<T, U> {
+  first;
+  second;
+  //? usando generics para acessar qualquer tipo de dado
+  constructor(first: T, second: U) {
+    this.first = first;
+    this.second = second;
+  }
+  get showFirst() {
+    return `The first is: ${this.first}`;
+  }
+}
+const newItem = new GenericClass(10, 'Surpresa');
+console.log(newItem);
+console.log(newItem.showFirst);
+
+//! 17 Parameters properties, definir a privacidade nome e tipo das props do constructor
+//* Resume a sintaxe das classes
+class ParameterProperties {
+  constructor(public name: string, private qty: number, private price: number) {
+    this.name = name;
+    this.qty = qty;
+    this.price = price;
+  }
+  get showQty() {
+    return `The quantity is: ${this.qty}`;
+  }
+  get showPrice() {
+    return `The Price is: ${this.price}`;
+  }
+}
+const newShirt = new ParameterProperties('Shirt', 10, 59.9);
+console.log(newShirt.name);
+console.log(newShirt.showQty);
+console.log(newShirt.showPrice);
+
+//! 18 Class expressions
+//* criar classe anonima e encapsular em uma variavel
+
+const myClass = class<T> {
+  name;
+  constructor(name: T) {
+    this.name = name;
+  }
+};
+const jao = new myClass('Jao');
+console.log(jao.name);
+
+//! 19 - Abstract classes
+//* Servir como molde para outra classe
+//* Todos os metodos da classe abstrata devem ser implementados nas filhas
+//* Nao pode ser instanciada (usar heranca e instanciar a filha)
+
+abstract class AbstractClass {
+  abstract showName(): void;
+}
+//const objeto = new AbstractClass(); erro nao da pra instanciar
+
+class AbstractClassChild extends AbstractClass {
+  name: string;
+  constructor(name: string) {
+    super();
+    this.name = name;
+  }
+  //implementando metodo da classe abstrata (senao da erro)
+  showName(): void {
+    console.log(`O nome eh ${this.name}`);
+  }
+}
+
+const objeto = new AbstractClassChild('Nosdaj');
+objeto.showName();
+
+//! 20 - Relacao entre Classes
+//* desde que sejam identicas voce pode criar um objeto atraves da relacao
+//* entre duas classes
+class Dog{
+  name!:string
+}
+class Cat{
+  name!:string
+}
+const doguinho: Dog = new Cat()
+console.log(doguinho);
