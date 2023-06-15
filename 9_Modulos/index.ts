@@ -24,3 +24,40 @@ import { a, b, myFunc } from './multiple.js';
 console.log(a);
 console.log(b);
 myFunc();
+
+//! 4 Exportando com alias (apelido)
+/*
+ *Mudar o nome do que foi importado para simplificar
+ *import { fjsowfjaslfslajfaljsfsaloasjffsjf as nosdaj }
+ */
+// destructuring {}
+import { someName as newName } from './changeName.js';
+console.log(newName);
+
+//! 5 Importar tudo de um modulo
+/*
+? Usamos o * para importar tudo
+*/
+import * as myImports from './numbers.js';
+console.log(myImports);
+console.log(myImports['n1']);
+const y = myImports.n2;
+console.log(`LOG ~ y:`, y);
+console.log(myImports.n3);
+
+//! 6 - Importar tipos ou interfaces (TypeScript only)
+import { Human } from './myType.js';
+//implementando a interface de um modulo em outra classe
+class User implements Human {
+  name: string;
+  age: number;
+  gender: string;
+  constructor(name: string, age: number, gender: string) {
+    this.name = name;
+    this.age = age;
+    this.gender = gender;
+  }
+}
+const nosdaj = new User('Nosdaj', 3212, 'Elf');
+
+console.log(`LOG ~ nosdaj:`, nosdaj);
