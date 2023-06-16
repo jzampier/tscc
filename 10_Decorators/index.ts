@@ -35,3 +35,93 @@ const myObj = new Myclass();
 myObj.testing();
 
 //! 2 Multiplos decorators
+function a() {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    console.log('Executando a()');
+  };
+}
+function b() {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    console.log('Executando b()');
+  };
+}
+function c() {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    console.log('Executando c()');
+  };
+}
+
+class MultipleDecorators {
+  @c() //? 3 decorator a ser executado
+  @b() //? 2 decorator a ser executado
+  @a() //? 1 decorator a ser executado
+  testing() {
+    console.log('Testando multiple decorators');
+  }
+}
+
+const multipleDecorators = new MultipleDecorators();
+multipleDecorators.testing();
+
+//! 3 Decorator de classes
+/*
+ * Ligado ao constructor (sempre que o constructor for chamado o decorator sera
+ * executado)
+ */
+//? Para o decorator de classe=> criar funcao e passar o constructor como param
+function classDecorator(constructor: Function) {
+  console.log(constructor);
+  if (constructor.name === 'User') {
+    console.log('Criando usuario');
+  }
+}
+
+//*chamar ele antes da classe igual aos decorators de metodos
+@classDecorator
+class User {
+  name;
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+const julio = new User('Julio');
+console.log(julio);
+
+//! 4 Decorator de metodos
+function enumerable(value: boolean) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    descriptor.enumerable = value;
+  };
+}
+class Machine {
+  name;
+  constructor(name: string) {
+    this.name = name;
+  }
+  @enumerable(false)
+  showName() {
+    console.log(this);
+    return `O nome da maquina é ${this.name}!`;
+  }
+}
+const trator = new Machine('Trator');
+trator.showName();
+console.log(trator.showName());
+
+//! 5 Acessor decorator
