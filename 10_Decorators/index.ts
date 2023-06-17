@@ -1,6 +1,7 @@
 //! Decorators (usados para customizar algum metodo ou funcao)
 //! @nomeDaFuncao
 //! Lembrar de ajustar o tsconfig.json para que o decorators funcione
+//? SAO MUITO BONS PARA REALIZAR VALIDACOES E REAPROVEITAMENTO DE CODIGO
 /*
  * Pode trabalhar com argumentos especiais (target, propertyKey, descriptor)
  * Grande vantagem:  permite localizar onde foi executado o decorator
@@ -124,4 +125,201 @@ const trator = new Machine('Trator');
 trator.showName();
 console.log(trator.showName());
 
+console.clear();
 //! 5 Acessor decorator
+/*
+ * Serve somente para getter e setter
+ */
+class Monster {
+  name;
+  age;
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+  @enumerable(false)
+  get showName() {
+    return `O nome do monstro é ${this.name}`;
+  }
+  @enumerable(false)
+  get showAge() {
+    return `A idade do monstro é ${this.age}`;
+  }
+}
+const pikaku = new Monster('Pikaku', 25);
+console.log(pikaku);
+
+console.clear();
+//! 6 Property decorator
+/*
+ * com eles eh possivel ativar uma funcao na hora da definicao da classe
+ * bom para validar modificar dados
+ */
+// function validate() {
+//   //?preparando o decorator que Atuara num Objeto com chave string
+//   return function (target: Object, propertyKey: string) {
+//     let value: string;
+//     //? definindo o getter
+//     const getter = function () {
+//       return value;
+//     };
+//     //? definindo o setter (com a estrutura de validacao de 5 digitos)
+//     const setter = function (newVal: string) {
+//       value = newVal.padStart(5, '0');
+//     };
+
+//     Object.defineProperty(target, propertyKey, {
+//       set: setter,
+//       get: getter,
+//     });
+//   };
+// }
+
+// class Id {
+//   @validate()
+//   id;
+//   constructor(id: string) {
+//     this.id = id;
+//   }
+// }
+
+// const newItem = new Id('389');
+// console.log(newItem);
+function validate(target: Object, propertyKey: string) {
+  let value: string;
+
+  const getter = function () {
+    return value;
+  };
+
+  const setter = function (newVal: string) {
+    value = newVal.padStart(5, '0');
+  };
+
+  Object.defineProperty(target, propertyKey, {
+    set: setter,
+    get: getter,
+  });
+}
+
+class Id {
+  @validate
+  id: string;
+
+  constructor(id: string) {
+    this.id = id;
+  }
+}
+
+const newItem = new Id('389');
+console.log(newItem);
+console.log(newItem.id);
+
+console.clear();
+//! 7 Exemplo de class decorator
+//*influenciando o construtor, vamos criar uma funcao para inserir data na
+//*criacao dos objetos
+function dataCadastro(cadastro: Function) {
+  //? o decorator vai criar e atribuir valor para essa propriedade na classe
+  //? que utilizar ele
+  cadastro.prototype.cadastradoEm = new Date();
+}
+@dataCadastro
+class Book {
+  id: number;
+  //*para acessar a propriedade
+  cadastradoEm?: Date;
+  constructor(id: number) {
+    this.id = id;
+  }
+}
+@dataCadastro
+class Pen {
+  id: number;
+  //*para acessar a propriedade (pode ser Date ou undefined)
+  cadastradoEm?: Date;
+  constructor(id: number) {
+    this.id = id;
+  }
+}
+
+const ilhaMisteriosa = new Book(12);
+const bic = new Pen(553);
+
+console.log(ilhaMisteriosa);
+console.log(bic);
+console.log(ilhaMisteriosa.cadastradoEm);
+console.log(bic.cadastradoEm);
+
+console.clear();
+
+//! 8 Exemplo de method decorator
+/*
+ *Vamos verificar se um usuario pode ou nao uma alteracao no sistema
+ */
+function checkPosts() {
+  return function (
+    target: Object,
+    key: string | Symbol,
+    descriptor: PropertyDescriptor
+  ) {
+    const childFunction = descriptor.value;
+    console.log(childFunction);
+    descriptor.value = function (...args: any[]) {
+      if (args[1] == true) {
+        console.warn('Usuario Jah Postou!!!!');
+        return null;
+      } else {
+        return childFunction.apply(this, args);
+      }
+    };
+    return descriptor;
+  };
+}
+class Post {
+  alreadyPosted: boolean = false;
+  @checkPosts()
+  post(content: string, alreadyPosted: boolean) {
+    this.alreadyPosted = true;
+    console.log(`Usuario postou:  ${content}`);
+  }
+}
+
+const newPost = new Post();
+newPost.post('Oi', newPost.alreadyPosted);
+newPost.post('Oi dinovo', newPost.alreadyPosted);
+newPost.post('Oi dinovo dinovo', newPost.alreadyPosted);
+
+console.clear();
+//! Exemplo real de property decorator
+//?Vamos criar uma validacao de numero maximo de caracteres
+function max(limit: number) {
+  return function (target: Object, propertyKey: string) {
+    let value: string;
+    const getter = () => value;
+    const setter = (newVal: string) => {
+      if (newVal.length > limit) {
+        console.warn(`Voce nao pode inserir mais que ${limit} caracteres`);
+        return;
+      } else {
+        value = newVal;
+      }
+    };
+    Object.defineProperty(target, propertyKey, {
+      get: getter,
+      set: setter,
+    });
+  };
+}
+class Admin {
+  @max(10)
+  username: string;
+  constructor(username: string) {
+    this.username = username;
+  }
+}
+
+const jao = new Admin('Jao');
+console.log(jao);
+const ralphaelson = new Admin('skfsfsfjsfklsflsflsflsflsflslflf');
+console.log(ralphaelson);
